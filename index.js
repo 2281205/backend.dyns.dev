@@ -1,12 +1,22 @@
 const express = require('express')
-require("dotenv").config();
-const PORT = process.env.PORT || 3010
-const UPKEY = process.env.UPKEY || 'nonKEY'
 const app = express()
+const mongoose = require("mongoose");
+mongoose.set = ("strictQuery", true);
 
-app.listen(PORT, ()=>{
-    console.log(`SERVER start on ${PORT}`)
-})
+require("dotenv").config();
+const { DB_HOST, PORT=3010, UPKEY='nonKEY' } = process.env;
+
+mongoose
+  .connect(DB_HOST)
+  .then(() => {
+    app.listen(PORT);
+    console.log(`Database connection successful on ${PORT} port`);
+  })
+  .catch((error) => {
+    console.log(error.message);
+    process.exit(1);
+  });
+
 
 app.get('/api', (req, res) =>{
     res.json({message: `Hi from My backend++ upKEY=${UPKEY}`})
